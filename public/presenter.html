@@ -1,37 +1,56 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8" />
-  <title>Presenter</title>
-  <style>
-    #canvas {
-      width: 400px;
-      height: 400px;
-      border: 1px solid #ccc;
-      position: relative;
-    }
-    .point {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: gray;
-      position: absolute;
-      transform: translate(-50%, -50%);
-    }
-  </style>
-</head>
-<body>
-  <h1>Presenter View</h1>
+  <head>
+    <meta charset="utf-8" />
+    <title>ML Talk – Presenter</title>
+    <style>
+      body { font-family: sans-serif; margin: 0; padding: 1rem; }
+      .slide { display: none; }
+      .slide.active { display: block; }
+      #controls { margin-bottom: 1rem; }
+      #results { margin-top: 1rem; border-top: 1px solid #ccc; padding-top: 0.5rem; white-space: pre-wrap; }
+    </style>
+  </head>
+  <body>
+    <h1>ML Talk – Presenter</h1>
 
-  <button id="prev-slide">Prev</button>
-  <button id="next-slide">Next</button>
-  <span id="slide-label">Slide 1</span>
+    <div id="controls">
+      <button id="prevSlide">Prev</button>
+      <span id="slideLabel"></span>
+      <button id="nextSlide">Next</button>
+    </div>
 
-  <button id="start-supervised">Start Supervised Activity (Slide 7)</button>
+    <!-- Example slides; you’ll replace screenshot/img content later -->
+    <div id="slides">
+      <section class="slide" data-slide-index="0">
+        <h2>Slide 1 – Intro</h2>
+        <p>Welcome!</p>
+      </section>
 
-  <div id="canvas"></div>
+      <section class="slide" data-slide-index="1">
+        <h2>Slide 2 – ML Overview</h2>
+      </section>
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="/js/presenter.js"></script>
-</body>
+      <!-- Example: supervised activity (activity 1) -->
+      <section class="slide" data-slide-index="2" data-activity-id="supervised-1">
+        <h2>Activity 1 – Supervised</h2>
+        <p>Audience is classifying points.</p>
+        <div id="results-supervised-1"></div>
+      </section>
+
+      <!-- You can add up to 6 activities with their own data-activity-id -->
+      <section class="slide" data-slide-index="3" data-activity-id="unsupervised-1">
+        <h2>Activity 2 – Unsupervised</h2>
+        <div id="results-unsupervised-1"></div>
+      </section>
+    </div>
+
+    <div id="results">
+      <strong>Live Activity Aggregate</strong>
+      <pre id="resultsRaw">No data yet.</pre>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/presenter.js"></script>
+  </body>
 </html>

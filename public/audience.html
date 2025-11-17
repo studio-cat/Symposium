@@ -1,41 +1,46 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8" />
-  <title>Audience</title>
-  <style>
-    #canvas {
-      width: 400px;
-      height: 400px;
-      border: 1px solid #ccc;
-      position: relative;
-    }
-    .point {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: gray;
-      position: absolute;
-      transform: translate(-50%, -50%);
-      cursor: pointer;
-    }
-    #label-picker {
-      margin-top: 8px;
-    }
-  </style>
-</head>
-<body>
-  <h1>Audience View</h1>
-  <div id="canvas"></div>
+  <head>
+    <meta charset="utf-8" />
+    <title>ML Talk – Audience</title>
+    <style>
+      body { font-family: sans-serif; margin: 0; padding: 1rem; }
+      .slide { display: none; }
+      .slide.active { display: block; }
+      button { margin: 0.25rem; }
+    </style>
+  </head>
+  <body>
+    <h1>ML Talk – Audience</h1>
 
-  <div id="label-picker">
-    <span>Current label:</span>
-    <button data-label="red">Red</button>
-    <button data-label="blue">Blue</button>
-    <span id="chosen-label">red</span>
-  </div>
+    <div id="slides">
+      <section class="slide" data-slide-index="0">
+        <h2>Slide 1 – Intro (audience view)</h2>
+        <p>Follow along with the presenter.</p>
+      </section>
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="/js/audience.js"></script>
-</body>
+      <section class="slide" data-slide-index="1">
+        <h2>Slide 2 – ML Overview (audience view)</h2>
+      </section>
+
+      <!-- Audience UI for supervised activity -->
+      <section class="slide" data-slide-index="2" data-activity-id="supervised-1">
+        <h2>Supervised Activity</h2>
+        <p>Select a label for the current point:</p>
+        <div id="supervised-point">Point: (x, y)</div>
+        <button class="label-btn" data-label="red">Red</button>
+        <button class="label-btn" data-label="blue">Blue</button>
+        <button class="label-btn" data-label="green">Green</button>
+        <p id="status-supervised-1"></p>
+      </section>
+
+      <section class="slide" data-slide-index="3" data-activity-id="unsupervised-1">
+        <h2>Unsupervised Activity</h2>
+        <p>(Placeholder: later you can add clustering UI.)</p>
+      </section>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/audience.js"></script>
+  </body>
 </html>

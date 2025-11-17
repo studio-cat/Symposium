@@ -1,80 +1,55 @@
+// public/presenter.js
 const socket = io();
 
-let currentSlide = 1;
-let supervisedPoints = [];
+const slides = Array.from(document.querySelectorAll(".slide"));
+const slideLabel = document.getElementById("slideLabel");
+const prevBtn = document.getElementById("prevSlide");
+const nextBtn = document.getElementById("nextSlide");
+const resultsRaw = document.getElementById("resultsRaw");
 
-document.getElementById("prev-slide").addEventListener("click", () => {
-  currentSlide = Math.max(1, currentSlide - 1);
-  socket.emit("goToSlide", { slide: currentSlide });
+let currentSlide = 0;
+
+socket.emit("joinRole", "presenter");
+
+socket.on("initialState", (state) => {
+  currentSlide = state.currentSlide || 0;
+  showSlide(currentSlide);
 });
 
-document.getElementById("next-slide").addEventListener("click", () => {
-  currentSlide += 1;
-  socket.emit("goToSlide", { slide: currentSlide });
+socket.on("slideChanged", ({ slideIndex }) => {
+  currentSlide = slideIndex;
+  showSlide(currentSlide);
 });
 
-document.getElementById("start-supervised").addEventListener("click", () => {
-  // Optionally force slide 7
-  currentSlide = 7;
-  socket.emit("goToSlide", { slide: currentSlide });
+socket.on("activityAggregate", ({ activityId, responses }) => {
+  // Basic dump – you can replace with plots later
+  resultsRaw.textContent =
+    `Activity: ${activityId}\n` + JSON.stringify(responses, null, 2);
 
-  socket.emit("startActivity", { activityId: "supervised" });
-});
-
-socket.on("slideChanged", ({ slide }) => {
-  currentSlide = slide;
-  document.getElementById("slide-label").textContent = `Slide ${slide}`;
-});
-
-// Initial points for supervised activity
-socket.on("activityStarted", ({ activityId, points }) => {
-  if (activityId !== "supervised") return;
-  supervisedPoints = points;
-  drawPresenterPoints(points, null);
-});
-
-// Live summary from Python
-socket.on("activitySummary", ({ activityId, summary }) => {
-  if (activityId !== "supervised") return;
-  drawPresenterPoints(summary.points, summary);
-});
-
-function drawPresenterPoints(points, summary) {
-  const canvas = document.getElementById("canvas");
-  canvas.innerHTML = "";
-
-  const rect = canvas.getBoundingClientRect();
-  const w = rect.width;
-  const h = rect.height;
-
-  const summaryById = {};
-  if (summary && summary.points) {
-    summary.points.forEach((p) => {
-      summaryById[p.id] = p;
-    });
+  // Optionally render in per-activity box
+  const box = document.getElementById(`results-${activityId}`);
+  if (box) {
+    box.textContent = `Responses (${responses.length}):\n` +
+                      JSON.stringify(responses, null, 2);
   }
+});
 
-  points.forEach((p) => {
-    // p may already have summary fields if calling with summary.points
-    const basePoint = summaryById[p.id] || p;
+prevBtn.addEventListener("click", () => changeSlide(-1));
+nextBtn.addEventListener("click", () => changeSlide(1));
 
-    const div = document.createElement("div");
-    div.className = "point";
-    div.style.left = (basePoint.x * w) + "px";
-    div.style.top = (basePoint.y * h) + "px";
+function changeSlide(delta) {
+  const total = slides.length;
+  currentSlide = (currentSlide + delta + total) % total;
+  const slideEl = slides[currentSlide];
+  const activityId = slideEl.dataset.activityId || null;
 
-    let color = "gray";
-    if (basePoint.majority === "red") color = "red";
-    if (basePoint.majority === "blue") color = "blue";
-    if (basePoint.disagreement) color = "purple";
+  showSlide(currentSlide);
 
-    div.style.background = color;
+  socket.emit("changeSlide", { slideIndex: currentSlide });
+  socket.emit("setActivity", { activityId });
+}
 
-    // Tooltip-ish info
-    div.title = basePoint.total
-      ? `Total: ${basePoint.total}\n${JSON.stringify(basePoint.counts)}`
-      : "No responses yet";
-
-    canvas.appendChild(div);
-  });
+function showSlide(idx) {
+  slides.forEach((s, i) => s.classList.toggle("active", i === idx));
+  slideLabel.textContent = `Slide ${idx + 1} / ${slides.length}`;
 }
