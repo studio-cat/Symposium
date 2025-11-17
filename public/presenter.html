@@ -9,8 +9,10 @@
       .slide.active { display: block; }
       #controls { margin-bottom: 1rem; }
       #results { margin-top: 1rem; border-top: 1px solid #ccc; padding-top: 0.5rem; white-space: pre-wrap; }
+      img.slide-img { width: 100%; max-width: 1200px; display: block; }
     </style>
   </head>
+
   <body>
     <h1>ML Talk – Presenter</h1>
 
@@ -20,29 +22,39 @@
       <button id="nextSlide">Next</button>
     </div>
 
-    <!-- Example slides; you’ll replace screenshot/img content later -->
     <div id="slides">
+
+      <!-- Slide 0 -->
       <section class="slide" data-slide-index="0">
-        <h2>Slide 1 – Intro</h2>
-        <p>Welcome!</p>
+        <img class="slide-img" src="/slides/slide0.png" alt="Slide 0"/>
       </section>
 
+      <!-- Slide 1 -->
       <section class="slide" data-slide-index="1">
-        <h2>Slide 2 – ML Overview</h2>
+        <img class="slide-img" src="/slides/slide1.png" alt="Slide 1"/>
       </section>
 
-      <!-- Example: supervised activity (activity 1) -->
+      <!-- Slide 2 – supervised activity -->
       <section class="slide" data-slide-index="2" data-activity-id="supervised-1">
+        <img class="slide-img" src="/slides/slide2.png" alt="Slide 2"/>
         <h2>Activity 1 – Supervised</h2>
         <p>Audience is classifying points.</p>
         <div id="results-supervised-1"></div>
       </section>
 
-      <!-- You can add up to 6 activities with their own data-activity-id -->
+      <!-- Slide 3 – unsupervised activity -->
       <section class="slide" data-slide-index="3" data-activity-id="unsupervised-1">
+        <img class="slide-img" src="/slides/slide3.png" alt="Slide 3"/>
         <h2>Activity 2 – Unsupervised</h2>
         <div id="results-unsupervised-1"></div>
       </section>
+
+      <!-- Add more slides as needed -->
+      <!--
+      <section class="slide" data-slide-index="4">
+        <img class="slide-img" src="/slides/slide4.png" />
+      </section>
+      -->
     </div>
 
     <div id="results">
