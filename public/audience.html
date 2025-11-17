@@ -1,47 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8" />
     <title>ML Talk – Audience</title>
     <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
-    <header>
-      <h1>Audience View</h1>
-      <div id="slideLabel"></div>
-    </header>
-    <main>
-      <div id="slideContainer">
-        <img id="audienceSlide" alt="Current slide" />
-        <div id="controls">
-          <button id="prevSlide">Prev Slide</button>
-          <button id="nextSlide">Next Slide</button>
-          <hr />
-          <span class="small-label">Activities</span>
-          <button id="btnSupervised" class="primary">Supervised Learning</button>
-        </div>
-      </div>
+    <h1>ML Talk – Audience</h1>
 
-      <section id="activityArea" style="display:none;">
-        <h2>Supervised Learning – You are the classifier</h2>
-        <div class="canvas-row">
-          <div class="canvas-column">
-            <p class="small-label">
-              Red = cluster above x = y, Blue = cluster below x = y. The black point
-              is the new sample. Which side do you think it belongs to?
-            </p>
-            <canvas id="audienceCanvas"></canvas>
-          </div>
-          <div class="canvas-column">
-            <p class="small-label">Your vote:</p>
-            <button id="btnAbove">Above (red cluster)</button>
-            <button id="btnBelow">Below (blue cluster)</button>
-            <p id="audienceStatus" class="small-label" style="margin-top:0.5rem;"></p>
-          </div>
-        </div>
-      </section>
-    </main>
+    <!-- No controls here; presenter drives everything -->
+    <div id="slideWrapper">
+      <img id="slide-img" src="slides/slide0.png" alt="Current slide" />
+    </div>
 
+    <!-- Activity area: FULL INTERACTIVE UI for the audience -->
+    <div id="activity-container">
+      <!-- JS will inject the supervised-learning canvas & buttons -->
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
     <script src="js/shared.js"></script>
     <script src="js/audience.js"></script>
   </body>

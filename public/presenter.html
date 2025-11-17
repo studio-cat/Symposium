@@ -1,40 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
     <meta charset="utf-8" />
     <title>ML Talk – Presenter</title>
     <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
-    <header>
-      <h1>Presenter View</h1>
-      <div id="slideLabel"></div>
-    </header>
-    <main>
-      <div id="slideContainer">
-        <img id="presenterSlide" alt="Current slide" />
-        <div id="controls">
-          <button id="prevSlide">Prev Slide</button>
-          <button id="nextSlide">Next Slide</button>
-          <hr />
-          <span class="small-label">Activities</span>
-          <button id="btnSupervised" class="primary">Supervised Learning</button>
-        </div>
-      </div>
+    <h1>ML Talk – Presenter</h1>
 
-      <section id="activityArea" style="display:none;">
-        <h2>Supervised Learning – Audience Summary</h2>
-        <p id="summaryText" class="small-label"></p>
-        <div class="summary-chip" id="summaryChip" style="display:none;">
-          <span>Audience consensus</span>
-          <span class="summary-color" id="summaryColor"></span>
-        </div>
-        <div style="margin-top:0.75rem;">
-          <button id="btnNextPoint">Next Test Point</button>
-        </div>
-      </section>
-    </main>
+    <!-- Slide controls: PRESENTER ONLY -->
+    <div id="controls">
+      <button id="prevSlide">Prev</button>
+      <span id="slideLabel"></span>
+      <button id="nextSlide">Next</button>
+    </div>
 
+    <!-- Current slide image -->
+    <div id="slideWrapper">
+      <img id="slide-img" src="slides/slide0.png" alt="Current slide" />
+    </div>
+
+    <!-- Activity selection: PRESENTER ONLY -->
+    <div id="activitySelector">
+      <button id="btnSupervised">Supervised Learning Activity</button>
+      <!-- Later you can add more buttons here for other activities -->
+    </div>
+
+    <!-- Activity area: summary only for presenter -->
+    <div id="activity-container">
+      <h2 id="activity-title">No activity selected</h2>
+      <div id="supervised-summary"></div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
     <script src="js/shared.js"></script>
     <script src="js/presenter.js"></script>
   </body>
