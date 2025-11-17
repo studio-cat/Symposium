@@ -1,70 +1,80 @@
-// public/js/presenter.js
 const socket = io();
 
-socket.emit('joinRole', 'presenter');
+let currentSlide = 1;
+let supervisedPoints = [];
 
-const slideImg = document.getElementById('slide');
-const prevBtn = document.getElementById('prev');
-const nextBtn = document.getElementById('next');
-const slideNumber = document.getElementById('slide-number');
-const startActivityBtn = document.getElementById('start-activity');
-const runPythonBtn = document.getElementById('run-python');
-const summaryDiv = document.getElementById('summary');
-const pythonDiv = document.getElementById('python-output');
-
-let currentSlide = 0;
-
-function updateSlideDisplay() {
-  slideImg.src = `/slides/slide${currentSlide}.png`;
-  slideNumber.textContent = `Slide ${currentSlide}`;
-}
-
-// sync from server
-socket.on('slideChanged', (idx) => {
-  currentSlide = idx;
-  updateSlideDisplay();
+document.getElementById("prev-slide").addEventListener("click", () => {
+  currentSlide = Math.max(1, currentSlide - 1);
+  socket.emit("goToSlide", { slide: currentSlide });
 });
 
-// simple local next/prev controls
-prevBtn.addEventListener('click', () => {
-  if (currentSlide > 0) {
-    currentSlide -= 1;
-    socket.emit('changeSlide', currentSlide);
-  }
-});
-
-nextBtn.addEventListener('click', () => {
+document.getElementById("next-slide").addEventListener("click", () => {
   currentSlide += 1;
-  socket.emit('changeSlide', currentSlide);
+  socket.emit("goToSlide", { slide: currentSlide });
 });
 
-// keyboard navigation (optional)
-window.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowRight') {
-    currentSlide += 1;
-    socket.emit('changeSlide', currentSlide);
+document.getElementById("start-supervised").addEventListener("click", () => {
+  // Optionally force slide 7
+  currentSlide = 7;
+  socket.emit("goToSlide", { slide: currentSlide });
+
+  socket.emit("startActivity", { activityId: "supervised" });
+});
+
+socket.on("slideChanged", ({ slide }) => {
+  currentSlide = slide;
+  document.getElementById("slide-label").textContent = `Slide ${slide}`;
+});
+
+// Initial points for supervised activity
+socket.on("activityStarted", ({ activityId, points }) => {
+  if (activityId !== "supervised") return;
+  supervisedPoints = points;
+  drawPresenterPoints(points, null);
+});
+
+// Live summary from Python
+socket.on("activitySummary", ({ activityId, summary }) => {
+  if (activityId !== "supervised") return;
+  drawPresenterPoints(summary.points, summary);
+});
+
+function drawPresenterPoints(points, summary) {
+  const canvas = document.getElementById("canvas");
+  canvas.innerHTML = "";
+
+  const rect = canvas.getBoundingClientRect();
+  const w = rect.width;
+  const h = rect.height;
+
+  const summaryById = {};
+  if (summary && summary.points) {
+    summary.points.forEach((p) => {
+      summaryById[p.id] = p;
+    });
   }
-  if (e.key === 'ArrowLeft' && currentSlide > 0) {
-    currentSlide -= 1;
-    socket.emit('changeSlide', currentSlide);
-  }
-});
 
-// start an activity on current slide
-startActivityBtn.addEventListener('click', () => {
-  socket.emit('startActivity');
-});
+  points.forEach((p) => {
+    // p may already have summary fields if calling with summary.points
+    const basePoint = summaryById[p.id] || p;
 
-// live summary only visible to presenter
-socket.on('activitySummary', (summary) => {
-  summaryDiv.textContent = JSON.stringify(summary, null, 2);
-});
+    const div = document.createElement("div");
+    div.className = "point";
+    div.style.left = (basePoint.x * w) + "px";
+    div.style.top = (basePoint.y * h) + "px";
 
-// run python on responses
-runPythonBtn.addEventListener('click', () => {
-  socket.emit('runPython');
-});
+    let color = "gray";
+    if (basePoint.majority === "red") color = "red";
+    if (basePoint.majority === "blue") color = "blue";
+    if (basePoint.disagreement) color = "purple";
 
-socket.on('pythonResult', (output) => {
-  pythonDiv.textContent = output;
-});
+    div.style.background = color;
+
+    // Tooltip-ish info
+    div.title = basePoint.total
+      ? `Total: ${basePoint.total}\n${JSON.stringify(basePoint.counts)}`
+      : "No responses yet";
+
+    canvas.appendChild(div);
+  });
+}

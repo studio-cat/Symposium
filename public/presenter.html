@@ -4,38 +4,32 @@
   <meta charset="UTF-8" />
   <title>Presenter</title>
   <style>
-    body { margin: 0; font-family: sans-serif; text-align: center; }
-    #slide { max-width: 70vw; max-height: 50vh; display: block; margin: 0 auto; }
-    #controls { margin-top: 10px; }
-    #summary, #python-output {
-      text-align: left;
-      max-width: 600px;
-      margin: 20px auto;
-      white-space: pre-wrap;
-      font-family: monospace;
+    #canvas {
+      width: 400px;
+      height: 400px;
       border: 1px solid #ccc;
-      padding: 10px;
+      position: relative;
+    }
+    .point {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: gray;
+      position: absolute;
+      transform: translate(-50%, -50%);
     }
   </style>
 </head>
 <body>
   <h1>Presenter View</h1>
 
-  <img id="slide" src="/public/slides/slide0.png" alt="slide" />
+  <button id="prev-slide">Prev</button>
+  <button id="next-slide">Next</button>
+  <span id="slide-label">Slide 1</span>
 
-  <div id="controls">
-    <button id="prev">Prev</button>
-    <span id="slide-number">Slide 0</span>
-    <button id="next">Next</button>
-    <button id="start-activity">Start Activity</button>
-    <button id="run-python">Run Python</button>
-  </div>
+  <button id="start-supervised">Start Supervised Activity (Slide 7)</button>
 
-  <h2>Live Activity Summary</h2>
-  <div id="summary">(no data yet)</div>
-
-  <h2>Python Output</h2>
-  <div id="python-output">(none)</div>
+  <div id="canvas"></div>
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="/js/presenter.js"></script>
