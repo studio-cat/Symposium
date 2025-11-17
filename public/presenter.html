@@ -1,68 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <title>ML Talk – Presenter</title>
-    <style>
-      body { font-family: sans-serif; margin: 0; padding: 1rem; }
-      .slide { display: none; }
-      .slide.active { display: block; }
-      #controls { margin-bottom: 1rem; }
-      #results { margin-top: 1rem; border-top: 1px solid #ccc; padding-top: 0.5rem; white-space: pre-wrap; }
-      img.slide-img { width: 100%; max-width: 1200px; display: block; }
-    </style>
+    <link rel="stylesheet" href="css/styles.css" />
   </head>
-
   <body>
-    <h1>ML Talk – Presenter</h1>
+    <header>
+      <h1>Presenter View</h1>
+      <div id="slideLabel"></div>
+    </header>
+    <main>
+      <div id="slideContainer">
+        <img id="presenterSlide" alt="Current slide" />
+        <div id="controls">
+          <button id="prevSlide">Prev Slide</button>
+          <button id="nextSlide">Next Slide</button>
+          <hr />
+          <span class="small-label">Activities</span>
+          <button id="btnSupervised" class="primary">Supervised Learning</button>
+        </div>
+      </div>
 
-    <div id="controls">
-      <button id="prevSlide">Prev</button>
-      <span id="slideLabel"></span>
-      <button id="nextSlide">Next</button>
-    </div>
-
-    <div id="slides">
-
-      <!-- Slide 0 -->
-      <section class="slide" data-slide-index="0">
-        <img class="slide-img" src="/slides/slide0.png" alt="Slide 0"/>
+      <section id="activityArea" style="display:none;">
+        <h2>Supervised Learning – Audience Summary</h2>
+        <p id="summaryText" class="small-label"></p>
+        <div class="summary-chip" id="summaryChip" style="display:none;">
+          <span>Audience consensus</span>
+          <span class="summary-color" id="summaryColor"></span>
+        </div>
+        <div style="margin-top:0.75rem;">
+          <button id="btnNextPoint">Next Test Point</button>
+        </div>
       </section>
+    </main>
 
-      <!-- Slide 1 -->
-      <section class="slide" data-slide-index="1">
-        <img class="slide-img" src="/slides/slide1.png" alt="Slide 1"/>
-      </section>
-
-      <!-- Slide 2 – supervised activity -->
-      <section class="slide" data-slide-index="2" data-activity-id="supervised-1">
-        <img class="slide-img" src="/slides/slide2.png" alt="Slide 2"/>
-        <h2>Activity 1 – Supervised</h2>
-        <p>Audience is classifying points.</p>
-        <div id="results-supervised-1"></div>
-      </section>
-
-      <!-- Slide 3 – unsupervised activity -->
-      <section class="slide" data-slide-index="3" data-activity-id="unsupervised-1">
-        <img class="slide-img" src="/slides/slide3.png" alt="Slide 3"/>
-        <h2>Activity 2 – Unsupervised</h2>
-        <div id="results-unsupervised-1"></div>
-      </section>
-
-      <!-- Add more slides as needed -->
-      <!--
-      <section class="slide" data-slide-index="4">
-        <img class="slide-img" src="/slides/slide4.png" />
-      </section>
-      -->
-    </div>
-
-    <div id="results">
-      <strong>Live Activity Aggregate</strong>
-      <pre id="resultsRaw">No data yet.</pre>
-    </div>
-
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/presenter.js"></script>
+    <script src="js/shared.js"></script>
+    <script src="js/presenter.js"></script>
   </body>
 </html>

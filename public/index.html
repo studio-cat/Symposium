@@ -1,31 +1,20 @@
 <!DOCTYPE html>
-<html>
-<head>
-  <meta charset="UTF-8" />
-  <title>Audience</title>
-  <style>
-    body { margin: 0; font-family: sans-serif; text-align: center; }
-    #slide { max-width: 90vw; max-height: 70vh; }
-    #activity { margin-top: 20px; display: none; }
-  </style>
-</head>
-
-<!-- ----------------------------------- -->
-
-<body>
-  <h1>Audience View</h1>
-  <img id="slide" src="/slides/slide0.png" alt="slide" />
-
-  <div id="activity">
-    <p>Activity: type an answer</p>
-    <form id="activity-form">
-      <input id="answer" autocomplete="off" />
-      <button type="submit">Submit</button>
-    </form>
-    <p id="thanks" style="display:none;">Thanks for your response!</p>
-  </div>
-
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="/js/audience.js"></script>
-</body>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>ML Talk</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>ML Talk</h1>
+    </header>
+    <main>
+      <p>Select your view:</p>
+      <p>
+        <a href="presenter.html"><button class="primary">Presenter View</button></a>
+        <a href="audience.html"><button>Audience View</button></a>
+      </p>
+    </main>
+  </body>
 </html>

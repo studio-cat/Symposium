@@ -1,46 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <title>ML Talk – Audience</title>
-    <style>
-      body { font-family: sans-serif; margin: 0; padding: 1rem; }
-      .slide { display: none; }
-      .slide.active { display: block; }
-      button { margin: 0.25rem; }
-    </style>
+    <link rel="stylesheet" href="css/styles.css" />
   </head>
   <body>
-    <h1>ML Talk – Audience</h1>
+    <header>
+      <h1>Audience View</h1>
+      <div id="slideLabel"></div>
+    </header>
+    <main>
+      <div id="slideContainer">
+        <img id="audienceSlide" alt="Current slide" />
+        <div id="controls">
+          <button id="prevSlide">Prev Slide</button>
+          <button id="nextSlide">Next Slide</button>
+          <hr />
+          <span class="small-label">Activities</span>
+          <button id="btnSupervised" class="primary">Supervised Learning</button>
+        </div>
+      </div>
 
-    <div id="slides">
-      <section class="slide" data-slide-index="0">
-        <h2>Slide 1 – Intro (audience view)</h2>
-        <p>Follow along with the presenter.</p>
+      <section id="activityArea" style="display:none;">
+        <h2>Supervised Learning – You are the classifier</h2>
+        <div class="canvas-row">
+          <div class="canvas-column">
+            <p class="small-label">
+              Red = cluster above x = y, Blue = cluster below x = y. The black point
+              is the new sample. Which side do you think it belongs to?
+            </p>
+            <canvas id="audienceCanvas"></canvas>
+          </div>
+          <div class="canvas-column">
+            <p class="small-label">Your vote:</p>
+            <button id="btnAbove">Above (red cluster)</button>
+            <button id="btnBelow">Below (blue cluster)</button>
+            <p id="audienceStatus" class="small-label" style="margin-top:0.5rem;"></p>
+          </div>
+        </div>
       </section>
+    </main>
 
-      <section class="slide" data-slide-index="1">
-        <h2>Slide 2 – ML Overview (audience view)</h2>
-      </section>
-
-      <!-- Audience UI for supervised activity -->
-      <section class="slide" data-slide-index="2" data-activity-id="supervised-1">
-        <h2>Supervised Activity</h2>
-        <p>Select a label for the current point:</p>
-        <div id="supervised-point">Point: (x, y)</div>
-        <button class="label-btn" data-label="red">Red</button>
-        <button class="label-btn" data-label="blue">Blue</button>
-        <button class="label-btn" data-label="green">Green</button>
-        <p id="status-supervised-1"></p>
-      </section>
-
-      <section class="slide" data-slide-index="3" data-activity-id="unsupervised-1">
-        <h2>Unsupervised Activity</h2>
-        <p>(Placeholder: later you can add clustering UI.)</p>
-      </section>
-    </div>
-
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/audience.js"></script>
+    <script src="js/shared.js"></script>
+    <script src="js/audience.js"></script>
   </body>
 </html>

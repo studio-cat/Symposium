@@ -1,55 +1,67 @@
-// public/presenter.js
-const socket = io();
+// public/js/presenter.js
 
-const slides = Array.from(document.querySelectorAll(".slide"));
-const slideLabel = document.getElementById("slideLabel");
-const prevBtn = document.getElementById("prevSlide");
-const nextBtn = document.getElementById("nextSlide");
-const resultsRaw = document.getElementById("resultsRaw");
+let summaryPollInterval = null;
 
-let currentSlide = 0;
+function updateSummaryUI(data) {
+  const summaryText = document.getElementById("summaryText");
+  const summaryChip = document.getElementById("summaryChip");
+  const summaryColor = document.getElementById("summaryColor");
 
-socket.emit("joinRole", "presenter");
-
-socket.on("initialState", (state) => {
-  currentSlide = state.currentSlide || 0;
-  showSlide(currentSlide);
-});
-
-socket.on("slideChanged", ({ slideIndex }) => {
-  currentSlide = slideIndex;
-  showSlide(currentSlide);
-});
-
-socket.on("activityAggregate", ({ activityId, responses }) => {
-  // Basic dump – you can replace with plots later
-  resultsRaw.textContent =
-    `Activity: ${activityId}\n` + JSON.stringify(responses, null, 2);
-
-  // Optionally render in per-activity box
-  const box = document.getElementById(`results-${activityId}`);
-  if (box) {
-    box.textContent = `Responses (${responses.length}):\n` +
-                      JSON.stringify(responses, null, 2);
+  if (!data || !data.current_test) {
+    summaryText.textContent = "No active test point.";
+    if (summaryChip) summaryChip.style.display = "none";
+    return;
   }
+
+  const idx = data.current_test.index;
+  const votes = data.votes || { above: 0, below: 0, score: 0 };
+  const total = votes.above + votes.below;
+
+  summaryText.textContent =
+    `Test point ${idx + 1} of ${data.test_count} — ` +
+    (total === 0
+      ? "no votes yet."
+      : `${votes.above} above, ${votes.below} below (${total} votes).`);
+
+  if (summaryChip && summaryColor) {
+    summaryChip.style.display = "inline-flex";
+    const c = Shared.scoreToColor(votes.score || 0);
+    summaryColor.style.backgroundColor = c;
+  }
+}
+
+async function pollSummary() {
+  try {
+    const res = await fetch("/api/supervised/summary");
+    const data = await res.json();
+    updateSummaryUI(data);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+async function initSupervisedActivityPresenter() {
+  await fetch("/api/supervised/init");
+  await pollSummary();
+
+  if (summaryPollInterval) clearInterval(summaryPollInterval);
+  summaryPollInterval = setInterval(pollSummary, 1500);
+
+  const nextPointBtn = document.getElementById("btnNextPoint");
+  nextPointBtn.onclick = async () => {
+    await fetch("/api/supervised/advance", { method: "POST" });
+    await pollSummary();
+  };
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  Shared.setupSlideControls("presenterSlide");
+
+  const activityArea = document.getElementById("activityArea");
+  const supervisedBtn = document.getElementById("btnSupervised");
+
+  supervisedBtn.addEventListener("click", () => {
+    activityArea.style.display = "block";
+    initSupervisedActivityPresenter();
+  });
 });
-
-prevBtn.addEventListener("click", () => changeSlide(-1));
-nextBtn.addEventListener("click", () => changeSlide(1));
-
-function changeSlide(delta) {
-  const total = slides.length;
-  currentSlide = (currentSlide + delta + total) % total;
-  const slideEl = slides[currentSlide];
-  const activityId = slideEl.dataset.activityId || null;
-
-  showSlide(currentSlide);
-
-  socket.emit("changeSlide", { slideIndex: currentSlide });
-  socket.emit("setActivity", { activityId });
-}
-
-function showSlide(idx) {
-  slides.forEach((s, i) => s.classList.toggle("active", i === idx));
-  slideLabel.textContent = `Slide ${idx + 1} / ${slides.length}`;
-}
