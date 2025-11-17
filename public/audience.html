@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Audience</title>
+  <style>
+    body { margin: 0; text-align: center; font-family: sans-serif; }
+    #slide { max-width: 90vw; max-height: 70vh; }
+    #activity { margin-top: 20px; display: none; }
+  </style>
+</head>
+<body>
+  <h4>Audience View</h4>
+
+  <img id="slide" src="/public/slides/slide2.png" />
+  hello this is a test. 
+
+  <div id="activity">
+    <p>Activity: Type an answer</p>
+    <form id="activity-form">
+      <input id="answer" autocomplete="off" />
+      <button type="submit">Submit</button>
+    </form>
+    <p id="thanks" style="display:none;">Thanks for your response!</p>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/audience.js"></script>
+</body>
+</html>
